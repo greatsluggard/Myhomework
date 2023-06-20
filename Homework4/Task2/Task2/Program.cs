@@ -19,7 +19,7 @@ namespace Task2
                 Console.Write(i + " ");
             }
             Console.WriteLine();
-            Console.WriteLine ("Наиболее частый элемент - " +Sort.SortOfCounting(array, 0, 10, 0));
+            Console.WriteLine ("Наиболее частый элемент - " +Sort.SortOfCountingAndFindFrequent(array));
         }
     }
 }

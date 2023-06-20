@@ -15,21 +15,22 @@ namespace Task3
             Console.WriteLine();
             Environment.Exit(0);
         }
+
         public string AddRecord()
         {
             Console.WriteLine("Введите имя и номер для записи: ");
             StringBuilder sbObject = new StringBuilder();
             using (StringWriter swObject = new StringWriter(sbObject))
             {
-                List<string> name_and_phone = new List<string>();
+                List<string> nameAndPhone = new List<string>();
                 for (int i = 0; ; i++)
                 {
                     string input = Console.ReadLine();
                     if (string.IsNullOrEmpty(input))
                         break;
-                    name_and_phone.Add(input);
+                    nameAndPhone.Add(input);
                 }
-                swObject.WriteLine(string.Join("\n", name_and_phone));
+                swObject.WriteLine(string.Join("\n", nameAndPhone));
             }
             Console.WriteLine();
             Console.WriteLine("Любая кнопка - вернуться в меню");
@@ -38,6 +39,7 @@ namespace Task3
             string result = sbObject.ToString();
             return result;
         }
+
         public void PrintAllLines()
         {
 
@@ -50,6 +52,7 @@ namespace Task3
             Console.ReadKey();
             Console.Clear();
         }
+
         public void NameFinder()
         {
             string path = @"C:\Number.txt";
@@ -77,6 +80,7 @@ namespace Task3
             Console.ReadKey();
             Console.Clear();
         }
+
         public void PhoneFinder()
         {
             string path = @"C:\Number.txt";
@@ -104,6 +108,7 @@ namespace Task3
             Console.ReadKey();
             Console.Clear();
         }
+
         public void SaveCurrentData (string result)
         {
             File.AppendAllText(@"C:\Number.txt", result);

@@ -15,7 +15,7 @@ namespace Task2
                 int.TryParse(Console.ReadLine(), out N);
             } while (N < 1 || N > 5000);
             do
-            {
+            { 
                 Console.Write("Введите K: ");
                 int.TryParse(Console.ReadLine(), out K);
             } while (K < 1 || K > 300000);
@@ -23,43 +23,43 @@ namespace Task2
 
             //создание массивов и их заполнение;
             Random random = new Random();
-            int[] array_N = new int[N];
-            for (int i = 0; i < array_N.Length; i++)
+            int[] arrayN = new int[N];
+            for (int i = 0; i < arrayN.Length; i++)
             {
-                array_N[i] = random.Next(0, 1000000001);
+                arrayN[i] = random.Next(0, 1000000001);
             }
-            Array.Sort(array_N); // сортировка массивов перед использованием в алгоритме бинарного поиска;
+            Array.Sort(arrayN); // сортировка массивов перед использованием в алгоритме бинарного поиска;
 
-            int[] array_K = new int[K];
-            for (int i = 0; i < array_K.Length; i++)
+            int[] arrayK = new int[K];
+            for (int i = 0; i < arrayK.Length; i++)
             {
-                array_K[i] = random.Next(0, 1000000001);
+                arrayK[i] = random.Next(0, 1000000001);
             }
-            Array.Sort(array_K);
+            Array.Sort(arrayK);
 
             // алгоритм O (N log N);
-            int lowBorder_N = 0;
-            int highBorder_N = array_N.Length - 1;
-            int midNumber_N = 0;
-            int findThis_N = N;
+            int lowBorderN = 0;
+            int highBorderN = arrayN.Length - 1;
+            int midNumberN = 0;
+            int findThisN = N;
 
-            while (array_N[midNumber_N] != findThis_N)
+            while (arrayN[midNumberN] != findThisN)
             {
-                midNumber_N = (lowBorder_N + highBorder_N) / 2;
-                if (findThis_N < array_N[midNumber_N])
+                midNumberN = (lowBorderN + highBorderN) / 2;
+                if (findThisN < arrayN[midNumberN])
                 {
-                    highBorder_N = midNumber_N - 1;
+                    highBorderN = midNumberN - 1;
                 }
-                else if (findThis_N > array_N[midNumber_N])
+                else if (findThisN > arrayN[midNumberN])
                 {
-                    lowBorder_N = midNumber_N + 1;
+                    lowBorderN = midNumberN + 1;
                 }
-                if (array_N[midNumber_N] == findThis_N)
+                if (arrayN[midNumberN] == findThisN)
                 {
                     Console.WriteLine("Значение N содержится в массиве");
                     break;
                 }
-                if (lowBorder_N > highBorder_N)
+                if (lowBorderN > highBorderN)
                 {
                     Console.WriteLine("Значение N не содержится в массиве");
                     break;
@@ -67,28 +67,28 @@ namespace Task2
             }
 
             // алгоритм O (K log N);
-            int lowBorder_K = 0;
-            int highBorder_K = array_K.Length - 1;
-            int midNumber_K = 0;
-            int findThis_K = K;
+            int lowBorderK = 0;
+            int highBorderK = arrayK.Length - 1;
+            int midNumberK = 0;
+            int findThisK = K;
 
-            while (array_K[midNumber_K] != findThis_K)
+            while (arrayK[midNumberK] != findThisK)
             {
-                midNumber_K = (lowBorder_K + highBorder_K) / 2;
-                if (findThis_K < array_K[midNumber_K])
+                midNumberK = (lowBorderK + highBorderK) / 2;
+                if (findThisK < arrayK[midNumberK])
                 {
-                    highBorder_K = midNumber_K - 1;
+                    highBorderK = midNumberK - 1;
                 }
-                else if (findThis_K > array_K[midNumber_K])
+                else if (findThisK > arrayK[midNumberK])
                 {
-                    lowBorder_K = midNumber_K + 1;
+                    lowBorderK = midNumberK + 1;
                 }
-                if (array_K[midNumber_K] == findThis_K)
+                if (arrayK[midNumberK] == findThisK)
                 {
                     Console.WriteLine("Значение K содержится в массиве");
                     break;
                 }
-                if (lowBorder_K > highBorder_K)
+                if (lowBorderK > highBorderK)
                 {
                     Console.WriteLine("Значение K не содержится в массиве");
                     break;

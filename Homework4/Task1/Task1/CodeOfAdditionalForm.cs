@@ -2,9 +2,9 @@
 
 namespace Task1
 {
-    class AddCode
+    class CodeOfAdditionalForm
     {
-        public string SuperConverter(sbyte value)
+        public string SuperConverting(sbyte value)
         {
             string numberInBinary = Convert.ToString(value, 2);
             for (int i = 0; i < numberInBinary.Length; i++)
