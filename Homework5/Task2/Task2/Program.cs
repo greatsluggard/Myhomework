@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Task2
 {
@@ -27,7 +23,7 @@ namespace Task2
                 warriorNumber++;
             }
 
-            cyclicList.Pop(m-1);
+            Console.WriteLine ("Позиция воина, который останется последним - " +cyclicList.DeleteOfEveryM(m - 1));
         }
     }
 }

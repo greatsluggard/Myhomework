@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Task1
 {
@@ -36,8 +32,9 @@ namespace Task1
                 {
                     Console.Clear();
                     Console.Write("Введите значение: ");
-                    int.TryParse(Console.ReadLine (), out int data);
-                    oneLinkedList.Sort(data);
+                    int.TryParse(Console.ReadLine(), out int data);
+                    oneLinkedList.SortOfElements(data);
+
                     /*Console.WriteLine("Куда вы хотите добавить значение?");
                     Console.WriteLine();
                     Console.WriteLine("1 - Добавить в начало списка.");
@@ -45,45 +42,43 @@ namespace Task1
                     Console.WriteLine("3 - Куда хочу, туда добавляю.");
 
                     string choiceForAdding = Console.ReadLine();
-                    object data;
 
                     switch (choiceForAdding)
                     {
                         case "1":
                             Console.Clear();
                             Console.Write("Введите данные для добавления в начало: ");
-                            data = Console.ReadLine();
-                            oneLinkedList.PushFront(data);
+                            int.TryParse(Console.ReadLine(), out int data1);
+                            oneLinkedList.PushFront(data1);
                             Console.WriteLine("Данные добавлены.");
                             Console.ReadKey();
                             break;
                         case "2":
                             Console.Clear();
                             Console.Write("Введите данные для добавления в конец: ");
-                            data = Console.ReadLine();
-                            oneLinkedList.Sort(data);
+                            int.TryParse(Console.ReadLine(), out int data2);
+                            oneLinkedList.Sort(data2);
                             Console.WriteLine("Данные добавлены.");
                             Console.ReadKey();
                             break;
                         case "3":
                             Console.Clear();
                             Console.Write("Введите данные для добавления: ");
-                            data = Console.ReadLine();
+                            int.TryParse(Console.ReadLine(), out int data3);
                             Console.Write("Введите место в списке: ");
                             int.TryParse(Console.ReadLine(), out int index);
-                            oneLinkedList.Insert(index, data);
-                            Console.WriteLine("Данные добавлены.");
+                            oneLinkedList.Insert(index, data3);
                             Console.ReadKey();
                             break;
-                    }*///изначальная реализация списка была такой...
-                                                                                  //...оставил эту часть кода закоменченной просто для себя
+                    }   //изначальная реализация списка была такой...
+                       //...оставил эту часть кода закоменченной просто для себя
+                }*///изначальная реализация
                 }
 
                 if (choice == "2")
                 {
                     Console.Clear();
-                    oneLinkedList.PopBack();
-                    Console.WriteLine("Элемент удалён.");
+                    Console.WriteLine($"Значение {oneLinkedList.PopBack()} удалено из списка");
                     Console.ReadKey();
                     /*Console.WriteLine("Какое значение хотите удалить?:");
                     Console.WriteLine("1 - Удалить первое значение.");
@@ -109,11 +104,10 @@ namespace Task1
                             Console.Clear();
                             Console.Write("Тогда введите индекс элемента: ");
                             int.TryParse(Console.ReadLine(), out int itemForDelete);
-                            oneLinkedList.Erase(itemForDelete);
-                            Console.WriteLine("Элемент удалён.");
+                            oneLinkedList.Delete(itemForDelete);
                             Console.ReadKey();
                             break;
-                    }*///изначальная реализация
+                    }*/ //изначальная реализация
                 }
 
                 if (choice == "3")
@@ -121,7 +115,7 @@ namespace Task1
                     oneLinkedList.PrintList();
                 }
 
-            } while (choice != "0"); 
+            } while (choice != "0");
         }
     }
 }

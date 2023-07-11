@@ -1,44 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Task2
 {
-    class OneCyclicList
+    public class OneCyclicList
     {
-        public Node head;
-        public Node tail;
-
-        public OneCyclicList()
+        private class Node
         {
-            head = tail = null;
+            public int Data { get; set; }
+            public Node Next { get; set; }
+
+            public Node(int data)
+            {
+                Data = data;
+                Next = null;
+            }
         }
+
+        Node Head = null;
+        Node Tail = null;
 
         public void Push(int data)
         {
             Node node = new Node(data);
-            if (head == null)
+            if (Head == null)
             {
-                head = node;
+                Head = node;
             }
-            if (tail != null)
+            if (Tail != null)
             {
-                tail.Next = node;
+                Tail.Next = node;
             }
-            tail = node;
-            tail.Next = head;
+            Tail = node;
+            Tail.Next = Head;
         }
 
-        public Node GetAt(int index)
+        public int SizeOfList()
         {
-            if (index < 0)
+            Node node = Head;
+            int count = 0;
+
+            do
             {
+                count++;
+                node = node.Next;
+            } while (node != Head);
+
+            return count;
+        }
+
+        Node GetNodeByIndex(int index)
+        {
+            if (SizeOfList() < 0)
+            {
+                Console.WriteLine("Список пуст.");
                 return null;
             }
 
-            Node node = head;
+            Node node = Head;
             int count = 0;
 
             while (node != null && count != index && node.Next != null)
@@ -50,14 +68,14 @@ namespace Task2
             return (count == index) ? node : null;
         }
 
-        public void Erase(int index)
+        public void Delete(int index)
         {
             if (index < 0)
             {
                 return;
             }
 
-            Node left = GetAt(index - 1);
+            Node left = GetNodeByIndex(index - 1);
             Node node = left.Next;
 
             if (node == null)
@@ -68,20 +86,20 @@ namespace Task2
             Node right = node.Next;
             left.Next = right;
 
-            if (node == tail)
+            if (node == Tail)
             {
-                tail = left;
+                Tail = left;
             }
 
-            if (node == head)
+            if (node == Head)
             {
-                head = right;
+                Head = right;
             }
         }
 
-        public int Pop(int m)
+        public int DeleteOfEveryM(int m)
         {
-            Node node = head;
+            Node node = Head;
 
             int count = 0; // переменная для счётчика индексов элементов в списке
             int nodeValue = 0; // позиция воина/элемента для удаления
@@ -92,25 +110,21 @@ namespace Task2
                 if (count == m) //каждый раз, когда count будет равен, к примеру 2...
                                 //...будет удаляться каждый 3-ий элемент. 
                 {
-                    Erase(nodeValue);
+                    Delete(nodeValue);
                     count = 0;
                 }
-                if (node == tail)// при повтором обходе списка, нужно сбрасывать счётчик, чтобы индексы элементов не сбивались
+                if (node == Tail)// при повтором обходе списка, нужно сбрасывать счётчик, чтобы индексы элементов не сбивались
                 {
                     nodeValue = 0;
                 }
-                if (head.Next == tail) //когда остаются двое
+                if (Head.Next == Tail) //когда остаются двое
                 {
-                    node = node.Next;
-                    //Console использую, т.к без этого метод не возвращает значение, почему не понимаю.
-                    Console.Write("Номер позиции воина, который останется последним - " + node.Data);
-                    Console.WriteLine();
-                    return node.Data;
+                    node = node.Next;                    
                 }
 
                 node = node.Next;
 
-            } while (head != tail);
+            } while (Head != Tail);
 
             return node.Data;
         }

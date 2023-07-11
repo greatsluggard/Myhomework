@@ -1,92 +1,134 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Task1
 {
-    class OneLinkedList
+    public class OneLinkedList
     {
-        public Node head;
-        public Node tail;
-        public OneLinkedList()
+        private class Node
         {
-            head = tail = null;
+            public int Data { get; set; }
+            public Node Next { get; set; }
+
+            public Node(int data)
+            {
+                Data = data;
+                Next = null;
+            }
         }
+
+        Node Head = null;
+        Node Tail = null;
 
         public void PushFront(int data)
         {
             Node node = new Node(data);
-            if (tail == null)
+            if (Tail == null)
             {
-                tail = node;
+                Tail = node;
             }
 
-            node.Next = head;
-            head = node;
+            node.Next = Head;
+            Head = node;
         }
 
         public void PushBack(int data)
         {
             Node node = new Node(data);
-            if (head == null)
+            if (Head == null)
             {
-                head = node;
+                Head = node;
             }
-            if (tail != null)
+            if (Tail != null)
             {
-                tail.Next = node;
+                Tail.Next = node;
             }
 
-            tail = node;
+            Tail = node;
         }
 
-        public void PopFront()
+        public int PopFront()
         {
-            if (head == null)
+            if (Head == null)
             {
-                return;
+                return 0;
             }
-            if (head == tail)
+            if (Head == Tail)
             {
-                head = tail = null;
-                return;
+                Head = Tail = null;
+                return 0;
             }
 
-            Node node = head;
-            head = node.Next;
+            Node node = Head;
+            Head = node.Next;
+            return node.Data;
         }
 
-        public void PopBack()
+        public int PopBack()
         {
-            if (tail == null)
+            if (Tail == null)
             {
-                return;
+                return 0;
             }
-            if (head == tail)
+            if (Head == Tail)
             {
-                head = tail = null;
-                return;
+                Head = Tail = null;
+                return 0;
             }
 
-            Node node = head;
-            for (; node.Next != tail; node = node.Next) ;
+            Node node = Head;
+            Node remember = Tail;
+            while (node.Next != Tail)
+            {
+                node = node.Next;
+            } 
             node.Next = null;
-            tail = node;
+            Tail = node;
+
+            return remember.Data;
         }
 
-        public Node GetAt(int index)
+        public int SizeOfList ()
         {
-            if (index < 0)
+            Node node = Head;
+            int count = 0;
+
+            do
             {
+                count++;
+                node = node.Next;
+            } while (node.Next != null);
+
+            return count;
+        }
+
+        public int GetNodeDataByIndex(int index)
+        {
+            if (SizeOfList() < 0)
+            {
+                Console.WriteLine("Список пуст.");
+                return 0;
+            }
+
+            Node node = Head;
+            int count = 0;
+            while (node != null && count != index && node.Next != null)
+            {
+                node = node.Next;
+                count++;
+            }
+
+            return count == index ? node.Data : 0;
+        }
+
+        Node GetNodeByIndex(int index)
+        {
+            if (SizeOfList() < 0)
+            {
+                Console.WriteLine("Список пуст.");
                 return null;
             }
 
-            Node node = head;
+            Node node = Head;
             int count = 0;
             while (node != null && count != index && node.Next != null) 
             {
@@ -94,15 +136,24 @@ namespace Task1
                 count++;
             }
 
-            return (count == index) ? node : null;
+            return count == index ? node : null;
         }
 
-        public void Insert(int index, int data)
+        public bool Insert(int index, int data)
         {
-            Node left = GetAt (index - 1);
+
+            Node left = GetNodeByIndex (index - 1);
             if (left == null)
             {
-                return;
+                Console.WriteLine("Значение не добавлено, обратите внимание на вводимые данные");
+                return false;
+            }
+
+            if (left == Tail)
+            {
+                PushBack(data);
+                Console.WriteLine("Значение добавлено в конец списка. Вы могли просто использовать метод PushBack");
+                return true;
             }
 
             Node right = left.Next;
@@ -110,71 +161,79 @@ namespace Task1
 
             if (right == null)
             {
-                tail = node;
+                Tail = node;
             }
 
             left.Next = node;
             node.Next = right;
+
+            Console.WriteLine("Значение успешно добавлено по индексу");
+            return true;
         }
 
-        public void Erase(int index)
+        public bool Delete(int index)
         {
             if (index < 0)
             {
-                return;
+                Console.WriteLine("Вы пытаетесь удалить элемент с номером которого не существует в списке");
+                return false;
             }
             if (index == 0)
             {
                 PopFront();
-                return;
+                Console.WriteLine("Первый элемент из списка удачно удалён");
+                return true;
             }
 
-            Node left = GetAt(index - 1);
+            Node left = GetNodeByIndex(index - 1);
             Node node = left.Next;
             if (node == null)
             {
-                return;
+                Console.WriteLine("Значение которое вы пытаетесь удалить и так не существует");
+                return false;
             }
             Node right = node.Next; 
             left.Next = right; 
-            if (node == tail)
+            if (node == Tail)
             {
-                tail = left;
+                Tail = left;
             }
+
+            Console.WriteLine("Значение по введённому вами индексу успешно удалено");
+            return true;
         }
 
         public void PrintList()
         {
             Console.Clear();
-            Node node = head;
+            Node node = Head;
             while (node != null)
             {
                 Console.Write(node.Data + " ");
                 node = node.Next;
             }
             Console.ReadKey();
-            Console.Clear();
         }
 
-        public void Sort(int data)
+        public void SortOfElements(int data)
         {
             int count = 0;
 
-            if (head == null) //если список пустой
+            if (Head == null) //если список пустой
             {
                 PushBack(data);
             }
-            if (data < head.Data) //если добавляемое значение меньше первого
+            if (data < Head.Data) //если добавляемое значение меньше первого
             {
                 PushFront(data);
             }
-            if (data > tail.Data) //если добавляемое значение больше последнего
+            if (data > Tail.Data) //если добавляемое значение больше последнего
             {
                 PushBack(data);
             }
-            if (data > head.Data) //если добавляемое значение больше первого
+            if (data > Head.Data) //если добавляемое значение больше первого
             {
-                Node node = head;
+                Node node = Head;
                 while (data > node.Data)
                 {
                     node = node.Next;
