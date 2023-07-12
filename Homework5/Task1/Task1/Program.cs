@@ -33,7 +33,7 @@ namespace Task1
                     Console.Clear();
                     Console.Write("Введите значение: ");
                     int.TryParse(Console.ReadLine(), out int data);
-                    oneLinkedList.SortOfElements(data);
+                    oneLinkedList.Add(data);
 
                     /*Console.WriteLine("Куда вы хотите добавить значение?");
                     Console.WriteLine();
