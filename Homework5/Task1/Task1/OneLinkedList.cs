@@ -215,7 +215,7 @@ namespace Task1
             Console.ReadKey();
         }
 
-        public void SortOfElements(int data)
+        public void Add (int data)
         {
             int count = 0;
 
