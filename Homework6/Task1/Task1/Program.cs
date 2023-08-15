@@ -7,8 +7,8 @@ namespace Task1
     {
         static void Main()
         {
-            MyStack stackForIntermediateResult = new MyStack(); 
-            MyStack stackForGeneralResult = new MyStack(); 
+            MyStack<int>stackForIntermediateResult = new MyStack<int>(); 
+            MyStack<int>stackForGeneralResult = new MyStack<int>(); 
 
             string expression = Console.ReadLine();
 
@@ -54,10 +54,10 @@ namespace Task1
                     switch (expression[i])
                     {
                         case '+':
-                            topValue = (int) stackForIntermediateResult.Top();
+                            topValue = stackForIntermediateResult.Top();
                             stackForIntermediateResult.Pop();
 
-                            lowValue = (int) stackForIntermediateResult.Top();
+                            lowValue = stackForIntermediateResult.Top();
                             stackForIntermediateResult.Pop();
 
                             intermediateResult = lowValue + topValue;
@@ -65,10 +65,10 @@ namespace Task1
                             break;
 
                         case '-':
-                            topValue = (int) stackForIntermediateResult.Top();
+                            topValue = stackForIntermediateResult.Top();
                             stackForIntermediateResult.Pop();
 
-                            lowValue = (int) stackForIntermediateResult.Top();
+                            lowValue = stackForIntermediateResult.Top();
                             stackForIntermediateResult.Pop();
 
                             intermediateResult = lowValue - topValue;
@@ -76,10 +76,10 @@ namespace Task1
                             break;
 
                         case '*':
-                            topValue = (int) stackForIntermediateResult.Top();
+                            topValue = stackForIntermediateResult.Top();
                             stackForIntermediateResult.Pop();
 
-                            lowValue = (int) stackForIntermediateResult.Top();
+                            lowValue = stackForIntermediateResult.Top();
                             stackForIntermediateResult.Pop();
 
                             intermediateResult = lowValue * topValue;
@@ -87,10 +87,10 @@ namespace Task1
                             break;
 
                         case '/':
-                            topValue = (int) stackForIntermediateResult.Top();
+                            topValue = stackForIntermediateResult.Top();
                             stackForIntermediateResult.Pop();
 
-                            lowValue = (int) stackForIntermediateResult.Top();
+                            lowValue = stackForIntermediateResult.Top();
                             stackForIntermediateResult.Pop();
 
                             intermediateResult = lowValue / topValue;
@@ -104,45 +104,45 @@ namespace Task1
                     switch (expression[i])
                     {
                         case '+':
-                            generalResult = (int) stackForGeneralResult.Top();
+                            generalResult = stackForGeneralResult.Top();
                             stackForGeneralResult.Pop();
 
-                            while ((int) stackForGeneralResult.Top() != 0)
+                            while (stackForGeneralResult.Top() != 0)
                             {
-                                generalResult += (int) stackForGeneralResult.Top();
+                                generalResult += stackForGeneralResult.Top();
                                 stackForGeneralResult.Pop();
                             }
 
                             break;
                         case '-':
-                            generalResult = (int) stackForGeneralResult.Top();
+                            generalResult = stackForGeneralResult.Top();
                             stackForGeneralResult.Pop();
 
-                            while ((int) stackForGeneralResult.Top() != 0)
+                            while (stackForGeneralResult.Top() != 0)
                             {
-                                generalResult -= (int) stackForGeneralResult.Top();
+                                generalResult -= stackForGeneralResult.Top();
                                 stackForGeneralResult.Pop();
                             }
 
                             break;
                         case '*':
-                            generalResult = (int) stackForGeneralResult.Top();
+                            generalResult = stackForGeneralResult.Top();
                             stackForGeneralResult.Pop();
 
-                            while ((int) stackForGeneralResult.Top() != 0)
+                            while (stackForGeneralResult.Top() != 0)
                             {
-                                generalResult *= (int) stackForGeneralResult.Top();
+                                generalResult *= stackForGeneralResult.Top();
                                 stackForGeneralResult.Pop();
                             }
 
                             break;
                         case '/':
-                            generalResult = (int) stackForGeneralResult.Top();
+                            generalResult = stackForGeneralResult.Top();
                             stackForGeneralResult.Pop();
 
-                            while ((int) stackForGeneralResult.Top() != 0)
+                            while (stackForGeneralResult.Top() != 0)
                             {
-                                generalResult /= (int) stackForGeneralResult.Top();
+                                generalResult /= stackForGeneralResult.Top();
                                 stackForGeneralResult.Pop();
                             }
 

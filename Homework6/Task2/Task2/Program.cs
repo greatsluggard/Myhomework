@@ -7,7 +7,7 @@ namespace Task2
     {
         static void Main()
         {
-            MyStack stack = new MyStack();
+            MyStack<char>stack = new MyStack<char>();
 
             string lineBrackets = Console.ReadLine();
             int countRound = 0;

@@ -8,7 +8,8 @@ namespace Task4
     {
         static void Main()
         {
-            MergeSorting sort = new MergeSorting();
+            MergeSorting <long> sortNumber = new MergeSorting <long> ();
+            MergeSorting <string> sortName = new MergeSorting<string> ();
 
             string path = "C:\\numbers.txt";
             string[] txtFile = File.ReadAllLines(path);
@@ -28,66 +29,81 @@ namespace Task4
                     Console.Clear();
                     Console.WriteLine("Записи отсортированы по номеру:");
 
-                    List<int> sortByNumber = new List<int>();
+                    List<long> numbersList = new List<long>();
 
-                    foreach (string nameAndNumber in txtFile)
+                    string phoneFromLine1;
+                    int indexForWrite1;
+
+                    long digitForNumbersList;
+
+                    foreach (string line in txtFile)
                     {
-                        for (int i = 0; i < nameAndNumber.Length; i++)
+                        phoneFromLine1 = "";
+                        indexForWrite1 = 0;
+
+                        digitForNumbersList = 0;
+
+                        for (int i = 0; i < line.Length; i++)
                         {
-                            if (char.IsDigit(nameAndNumber[i]))
+                            if (char.IsDigit(line[i]))
                             {
-                                int digit = int.Parse(nameAndNumber[i].ToString());
-                                sortByNumber.Add(digit);
-                                break;
+                                phoneFromLine1 = phoneFromLine1.Insert(indexForWrite1, line[i].ToString());
+                                indexForWrite1++;
                             }
                         }
+
+                        long.TryParse(phoneFromLine1, out digitForNumbersList);
+                        numbersList.Add(digitForNumbersList);
                     }
 
-                    int left = 0;
-                    int right = sortByNumber.Count - 1;
-                    sort.MergeSort(sortByNumber, left, right);
+                    sortNumber.Sort(numbersList);
 
                     HashSet<string> newTxtFile = new HashSet<string>();
 
                     int j = 0;
 
+                    string phoneFromLine2;
+                    int indexForWrite2;
+                    long digitForCompare;
+
                     do
                     {
-                        if (j >= sortByNumber.Count)
+                        foreach (string line in txtFile)
                         {
-                            break;
-                        }
-                        foreach (string nameAndNumber in txtFile)
-                        {
-                            for (int k = 0; k < nameAndNumber.Length; k++)
+                            phoneFromLine2 = "";
+                            indexForWrite2 = 0;
+                            digitForCompare = 0;
+
+                            for (int k = 0; k < line.Length; k++) 
                             {
-                                if (char.IsDigit(nameAndNumber[k]))
+                                if (char.IsDigit(line[k]))
                                 {
-                                    int number = int.Parse(nameAndNumber[k].ToString());
-                                    if (number == sortByNumber[j])
-                                    {
-                                        newTxtFile.Add(nameAndNumber);
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
+                                    phoneFromLine2 = phoneFromLine2.Insert(indexForWrite2, line[k].ToString());
+                                    indexForWrite2++;
                                 }
                             }
-                        }
-                        j++;
-                    } while (newTxtFile.Count != txtFile.Length);
 
+                            long.TryParse(phoneFromLine2, out digitForCompare);
+
+                            if (digitForCompare == numbersList[j])
+                            {
+                                newTxtFile.Add(line);
+                                j++;
+                            }
+                            if (j >= numbersList.Count)
+                            {
+                                break;
+                            }
+                        }
+                    } while (newTxtFile.Count != txtFile.Length);
 
                     Console.WriteLine();
 
-                    foreach (string sortedLine in newTxtFile)
+                    foreach (string line in newTxtFile)
                     {
-                        Console.WriteLine(sortedLine);
+                        Console.WriteLine(line);
                     }
                 }
-
 
 
                 if (choice == "1")
@@ -95,69 +111,71 @@ namespace Task4
                     Console.Clear();
                     Console.WriteLine("Записи отсортированы по имени:");
 
-                    List<int> sortByName = new List<int>();
+                    List<string> namesList = new List<string>();
 
-                    foreach (string nameAndNumber in txtFile)
+                    string nameForNamesList;
+                    int indexForWrite1;
+
+                    foreach (string line in txtFile)
                     {
-                        for (int i = 0; i < nameAndNumber.Length; i++)
+                        nameForNamesList = "";
+                        indexForWrite1 = 0;
+
+                        for (int i = 0; i < line.Length; i++)
                         {
-                            if (char.IsLetter(nameAndNumber[i]))
+                            if (char.IsLetter(line[i]))
                             {
-                                nameAndNumber[i].ToString();
-                                sortByName.Add(nameAndNumber[i]);
-                                break;
+                                nameForNamesList = nameForNamesList.Insert(indexForWrite1, line[i].ToString());
+                                indexForWrite1++;
                             }
                         }
+
+                        namesList.Add(nameForNamesList);
                     }
 
-                    int left = 0;
-                    int right = sortByName.Count - 1;
-                    sort.MergeSort(sortByName, left, right);
-
-                    List<char> sortedLetters = new List<char>();
-                    foreach (int letterInUnicode in sortByName)
-                    {
-                        char character = Convert.ToChar(letterInUnicode);
-                        sortedLetters.Add(character);
-                    }
+                    sortName.Sort(namesList);
 
                     HashSet<string> newTxtFile = new HashSet<string>();
 
                     int j = 0;
-                    
+                    string nameForCompare;
+                    int indexForWrite2;
+
                     do
                     {
-                        if (j >= sortByName.Count)
+                        foreach (string line in txtFile)
                         {
-                            break;
-                        }
-                        foreach (string nameAndNumber in txtFile)
-                        {
-                            for (int k = 0; k < nameAndNumber.Length; k++)
+                            nameForCompare = "";
+                            indexForWrite2 = 0;
+
+                            for (int k = 0; k < line.Length; k++)
                             {
-                                if (char.IsLetter(nameAndNumber[k]))
+                                if (char.IsLetter(line[k]))
                                 {
-                                    if (nameAndNumber[k] == sortedLetters[j])
-                                    {
-                                        newTxtFile.Add(nameAndNumber);
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
+                                    nameForCompare = nameForCompare.Insert(indexForWrite2, line[k].ToString());
+                                    indexForWrite2++;
                                 }
                             }
+
+                            if (nameForCompare == namesList[j])
+                            {
+                                newTxtFile.Add(line);
+                                j++;
+                            }
+
+                            if (j >= namesList.Count)
+                            {
+                                break;
+                            }
                         }
-                        j++;
 
                     } while (newTxtFile.Count != txtFile.Length);
 
                     Console.WriteLine();
 
-                    foreach (string sortedLine in newTxtFile)
+                    foreach (string line in newTxtFile)
                     {
-                        Console.WriteLine(sortedLine);
+                        Console.WriteLine(line);
                     }
                 }
 

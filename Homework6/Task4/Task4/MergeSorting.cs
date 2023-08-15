@@ -1,60 +1,69 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Task4
 {
-    class MergeSorting
+    class MergeSorting<T> where T : IComparable<T>
     {
-        public void Merge (List<int> array, int left, int mid, int right)
+        public void Sort(List<T> list)
         {
-            int i, j, k;
+            if (list.Count <= 1) return;
 
-            int lenght1 = mid - left + 1;
-            int lenght2 = right - mid;
+            int middle = list.Count / 2;
 
-            int[] leftArray = new int[lenght1 + 1];
-            int[] rightArray = new int[lenght2 + 1];
+            List<T> left = new List<T>();
+            List<T> right = new List<T>();
 
-            for (i = 0; i < lenght1; i++)
+            for (int i = 0; i < middle; i++)
             {
-                leftArray[i] = array[left + i];
+                left.Add(list[i]);
             }
 
-            for (j = 1; j <= lenght2; j++)
+            for (int i = middle; i < list.Count; i++)
             {
-                rightArray[j-1] = array[mid + j];
+                right.Add(list[i]);
             }
 
-            leftArray[lenght1] = int.MaxValue;
-            rightArray[lenght2] = int.MaxValue;
+            Sort(left);
+            Sort(right);
 
-            i = 0;
-            j = 0;
+            Merge(list, left, right);
+        }
 
-            for (k = left; k <= right; k++)
+        private void Merge(List<T> list, List<T> left, List<T> right)
+        {
+            int leftIndex = 0;
+            int rightIndex = 0;
+            int resultIndex = 0;
+
+            while (leftIndex < left.Count && rightIndex < right.Count)
             {
-                if (leftArray[i] < rightArray[j])
+                if (left[leftIndex].CompareTo(right[rightIndex]) < 0)
                 {
-                    array[k] = leftArray[i];
-                    i = i + 1;
+                    list[resultIndex] = left[leftIndex];
+                    leftIndex++;
                 }
                 else
                 {
-                    array[k] = rightArray[j];
-                    j = j + 1;
+                    list[resultIndex] = right[rightIndex];
+                    rightIndex++;
                 }
+
+                resultIndex++;
             }
-        }
 
-        public void MergeSort (List<int> array, int left, int right)
-        {
-            int mid;
-
-            if (left < right)
+            while (leftIndex < left.Count)
             {
-                mid = (left + right) / 2;
-                MergeSort(array, left, mid);
-                MergeSort(array, mid + 1, right);
-                Merge(array, left, mid, right);
+                list[resultIndex] = left[leftIndex];
+                leftIndex++;
+                resultIndex++;
+            }
+
+            while (rightIndex < right.Count)
+            {
+                list[resultIndex] = right[rightIndex];
+                rightIndex++;
+                resultIndex++;
             }
         }
     }
