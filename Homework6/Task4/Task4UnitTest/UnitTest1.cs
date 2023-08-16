@@ -1,19 +1,17 @@
+using NUnit.Framework;
+
 namespace Task4UnitTest
+
 {
     public class Tests
     {
-        private string nameForNamesList;
-
-        [SetUp]
-        public void Setup()
-        {
-            nameForNamesList = "Ivan";
-        }
-
         [Test]
-        public void IsMoreThanOneLetter()
+        public void IsNameMoreThanOneLetter()
         {
-            Assert.IsFalse(nameForNamesList.Length == 1);
+            string nameForNamesList;
+            nameForNamesList = "Ivan";
+
+            Assert.IsTrue(nameForNamesList.Length > 1);
         }
     }
 }

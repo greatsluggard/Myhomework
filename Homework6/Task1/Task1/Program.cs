@@ -7,8 +7,8 @@ namespace Task1
     {
         static void Main()
         {
-            MyStack<int>stackForIntermediateResult = new MyStack<int>(); 
-            MyStack<int>stackForGeneralResult = new MyStack<int>(); 
+            MyStack<int> stackForIntermediateResult = new MyStack<int>();
+            MyStack<int> stackForGeneralResult = new MyStack<int>(); 
 
             string expression = Console.ReadLine();
 
@@ -150,7 +150,9 @@ namespace Task1
                     }
                 }
             }
-            if (stackForGeneralResult.Size() == 1)
+
+            MyStack<int> value = new MyStack<int>();
+            if (value.LenghtStack == 1) 
             {
                 Console.WriteLine("Result = " +stackForGeneralResult.Top());
             }

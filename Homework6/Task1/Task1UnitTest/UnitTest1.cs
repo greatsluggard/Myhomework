@@ -1,4 +1,5 @@
 using StackForHomework;
+using NUnit.Framework;
 
 namespace Task1UnitTest
 {
@@ -34,7 +35,7 @@ namespace Task1UnitTest
             stack.Push(number3);
 
             //assert
-            Assert.IsTrue(stack.Size() == 3);
+            Assert.IsTrue(stack.LenghtStack == 3);
         }
     }
 }

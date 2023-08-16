@@ -8,35 +8,35 @@ namespace Task3
     {
         static void Main()
         {
-            MyStack stack = new MyStack();
+            MyStack<char> stack = new MyStack<char>();
 
-            string math = Console.ReadLine();
-            int count = math.Length-1;
+            string mathExpression = Console.ReadLine();
+            int count = mathExpression.Length-1;
             int stackSize = 0;
             List<char> numberFromBackets = new List<char>();
            
-            for (int i = 0; i < math.Length; i++)
+            for (int i = 0; i < mathExpression.Length; i++)
             {
-                if (char.IsNumber(math[i]))
+                if (char.IsNumber(mathExpression[i]))
                 {
                     stackSize++;
                 }
-                if (math[i] == '+' || math[i] == '-' || math[i] == '*' || math[i] == '/')
+                if (mathExpression[i] == '+' || mathExpression[i] == '-' || mathExpression[i] == '*' || mathExpression[i] == '/')
                 {
                     stackSize++;
                 }
             }
 
-            while (stack.Size() != stackSize)
+            while (stack.LenghtStack != stackSize)
             {
-                if (math[count] == '+' || math[count] == '-' || math[count] == '*' || math[count] == '/')
+                if (mathExpression[count] == '+' || mathExpression[count] == '-' || mathExpression[count] == '*' || mathExpression[count] == '/')
                 {
-                    stack.Push(math[count]);
+                    stack.Push(mathExpression[count]);
                 }
 
-                if (char.IsNumber(math[count]))
+                if (char.IsNumber(mathExpression[count]))
                 {
-                    numberFromBackets.Add(math[count]);
+                    numberFromBackets.Add(mathExpression[count]);
                 }
 
                 if ((stack.Top() is char top) && (top == '+' || top == '-' || top == '*' || top == '/'))
@@ -48,17 +48,17 @@ namespace Task3
                     numberFromBackets.Clear();
                 }
 
-                if (math[count] == ')')
+                if (mathExpression[count] == ')')
                 {
-                    while (math[count] != '(')
+                    while (mathExpression[count] != '(')
                     {
-                        if (char.IsNumber(math[count]))
+                        if (char.IsNumber(mathExpression[count]))
                         {
-                            numberFromBackets.Add(math[count]);
+                            numberFromBackets.Add(mathExpression[count]);
                         }
-                        if (math[count] == '+' || math[count] == '-' || math[count] == '*' || math[count] == '/')
+                        if (mathExpression[count] == '+' || mathExpression[count] == '-' || mathExpression[count] == '*' || mathExpression[count] == '/')
                         {
-                            stack.Push(math[count]);
+                            stack.Push(mathExpression[count]);
                         }
                         count--;
                     }

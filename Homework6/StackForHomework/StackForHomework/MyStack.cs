@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace StackForHomework
 {
-    public class MyStack<T>: IEnumerable
+    public class MyStack<T> : IEnumerable
     {
 
         private class Node
@@ -20,7 +20,12 @@ namespace StackForHomework
                 Prev = null;
             }
         }
-        private int countOfSize = 0;
+        private int length = 0;
+
+        public int LenghtStack
+        {
+            get { return length; }
+        }
 
         private Node head = null;
         private Node tail = null;
@@ -43,7 +48,7 @@ namespace StackForHomework
             head = node;
             node.Prev = null;
 
-            countOfSize++;
+            length++;
         }
 
         public void Pop() //Удаление элемента с вершины стэка
@@ -62,14 +67,9 @@ namespace StackForHomework
             head = node.Next;
             node.Prev = null;
 
-            countOfSize--;
+            length--;
 
             return;
-        }
-
-        public int Size() //Получение размерности стэка
-        {
-            return countOfSize;
         }
 
         public T Top() //Получение значения элемента находящегося на вершине стэка

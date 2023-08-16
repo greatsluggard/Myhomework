@@ -3,7 +3,7 @@ namespace Task2UnitTest
     public class Tests
     {
         [Test]
-        public void CheckFirstBracket() //проверка того, что первая скобка не может быть закрывающейся
+        public void IsFirstBracketOpen() //проверка того, что первая скобка не может быть закрывающейся
         {
             //arrange
             string lineBrackets1;
