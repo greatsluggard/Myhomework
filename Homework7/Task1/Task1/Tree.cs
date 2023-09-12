@@ -2,10 +2,9 @@
 
 namespace Task1
 {
-    class Tree<T>
-        where T : IComparable<T>
+    public class Tree<T> where T : IComparable<T>
     {
-        class Node<T>
+        public class Node<T>
         {
             public T Data { get; set; }
             public Node<T> Left { get; set; }
@@ -19,130 +18,221 @@ namespace Task1
             }
         }
 
-        private Node<T> root;
+        private Node<T> _root;
+
+        public T ReturnRootData()
+        {
+            return _root.Data;
+        }
 
         public Tree()
         {
-            root = null;
+            _root = null;
         }
 
-        public void AddToTree(T value)
+        public void Add(T value)
         {
-            root = AddToTree(root, value);
-        }
-        private Node<T> AddToTree(Node<T> node, T value)
-        {
-            if (node == null)
+            if (_root == null)
             {
-                node = new Node<T>(value);
+                _root = new Node<T>(value);
+                return;
             }
 
-            else if (value.CompareTo(node.Data) < 0)
+            Node<T> current = _root;
+            Node<T> parent = null;
+
+            while (current != null)
             {
-                node.Left = AddToTree(node.Left, value);
+                parent = current;
+
+                if (value.CompareTo(current.Data) < 0)
+                {
+                    current = current.Left;
+                }
+                else if (value.CompareTo(current.Data) > 0)
+                {
+                    current = current.Right;
+                }
+                else
+                {
+                    return;
+                }
             }
 
-            else if (value.CompareTo(node.Data) > 0)
+            Node<T> node = new Node<T>(value);
+
+            if (value.CompareTo(parent.Data) < 0)
             {
-                node.Right = AddToTree(node.Right, value);
+                parent.Left = node;
             }
-
-            return node;
+            else
+            {
+                parent.Right = node;
+            }
         }
 
-        public void DeleteNode(T value)
+        public void Delete(T value)
         {
-            root = DeleteNode(value, root);
-        }
-        private Node<T> DeleteNode(T value, Node<T> node)
-        {
-            if (root == null)
+            if (_root == null)
             {
                 Console.WriteLine("Пустое бинарное дерево!");
                 Console.ReadKey();
-                return null;
+                return;
             }
 
-            if (value.CompareTo(node.Data) < 0)
+            Node<T> current = _root;
+            Node<T> parent = null;
+
+            while (current != null && value.CompareTo(current.Data) != 0)
             {
-                node.Left = DeleteNode(value, node.Left);
-            }
-            else if (value.CompareTo(node.Data) > 0)
-            {
-                node.Right = DeleteNode(value, node.Right);
-            }
-            else
-            {
-                if (node.Left == null && node.Right == null)
+                parent = current;
+
+                if (value.CompareTo(current.Data) < 0)
                 {
-                    node = null;
-                }
-                else if (node.Left == null)
-                {
-                    node = node.Right;
-                }
-                else if (node.Right == null)
-                {
-                    node = node.Left;
+                    current = current.Left;
                 }
                 else
                 {
-                    Node<T> temp = node.Right;
-                    while (temp.Left != null)
+                    current = current.Right;
+                }
+            }
+
+            if (current == null)
+            {
+                return;
+            }
+
+            if (current.Left == null && current.Right == null)
+            {
+                if (parent != null)
+                {
+                    if (parent.Left == current)
                     {
-                        temp = temp.Left;
+                        parent.Left = null;
                     }
-                    node.Data = temp.Data;
-                    node.Right = DeleteNode(temp.Data, node.Right);
-                }
-            }
-
-            if (node != null && node.Left == null && node.Right == null && node.Data.CompareTo(root.Data) == 0)
-            {
-                root = null;
-            }
-
-            return node;
-        }
-
-        public void IsBelongsToSet(T value)
-        {
-            IsBelongsToSet(value, root);
-        }
-        private void IsBelongsToSet(T value, Node<T> node)
-        {
-            if (node == null)
-            {
-                Console.WriteLine("Значение не принадлежит множеству");
-                Console.ReadKey();
-                return;
-            }
-            if (value.CompareTo(node.Data) == 0)
-            {
-                Console.WriteLine("Переданное значение принадлежит к множеству");
-                Console.ReadKey();
-                return;
-            }
-            else
-            {
-                if (value.CompareTo(node.Data) < 0)
-                {
-                    IsBelongsToSet(value, node.Left);
+                    else
+                    {
+                        parent.Right = null;
+                    }
                 }
                 else
                 {
-                    IsBelongsToSet(value, node.Right);
+                    _root = null;
                 }
             }
+            else if (current.Left == null)
+            {
+                if (parent != null)
+                {
+                    if (parent.Left == current)
+                    {
+                        parent.Left = current.Right;
+                    }
+                    else
+                    {
+                        parent.Right = current.Right;
+                    }
+                }
+                else
+                {
+                    _root = current.Right;
+                }
+            }
+            else if (current.Right == null)
+            {
+                if (parent != null)
+                {
+                    if (parent.Left == current)
+                    {
+                        parent.Left = current.Left;
+                    }
+                    else
+                    {
+                        parent.Right = current.Left;
+                    }
+                }
+                else
+                {
+                    _root = current.Left;
+                }
+            }
+            else
+            {
+                Node<T> currentParent = current;
+                Node<T> currentRightChild = current.Right;
+
+                while (currentRightChild.Left != null)
+                {
+                    currentParent = currentRightChild;
+                    currentRightChild = currentRightChild.Left;
+                }
+
+                if (currentParent != current)
+                {
+                    currentParent.Left = currentRightChild.Right;
+                    currentRightChild.Right = current.Right;
+                }
+
+                currentRightChild.Left = current.Left;
+
+                if (parent != null)
+                {
+                    if (parent.Left == current)
+                    {
+                        parent.Left = currentRightChild;
+                    }
+                    else
+                    {
+                        parent.Right = currentRightChild;
+                    }
+                }
+                else
+                {
+                    _root = currentRightChild;
+                }
+            }
+        }
+
+        public void Find(T value)
+        {
+            Node<T> node = _root;
+
+            do
+            {
+                if (value.CompareTo(node.Data) == 0)
+                {
+                    Console.WriteLine("Переданное значение принадлежит к множеству");
+                    Console.ReadKey();
+                    return;
+                }
+                else 
+                {
+                    if (value.CompareTo(node.Data) < 0)
+                    {
+                        node = node.Left;
+                    }
+                    else if (value.CompareTo(node.Data) > 0)
+                    {
+                        node = node.Right;
+                    }
+                }
+                if (node == null)
+                {
+                    Console.WriteLine("Значение не принадлежит множеству");
+                    Console.ReadKey();
+                    return;
+                }
+            } while (node != null);
         }
 
         public void PrintTreeAscending()
         {
-            PrintTreeAscending(root);
+            PrintTreeAscending(_root);
         }
+
         private void PrintTreeAscending(Node<T> node)
         {
-            if (root == null )
+            if (_root == null )
             {
                 Console.WriteLine("В дереве отсутствуют значения");
                 Console.ReadKey();
@@ -158,11 +248,12 @@ namespace Task1
 
         public void PrintTreeDescending()
         {
-            PrintTreeDescending(root);
+            PrintTreeDescending(_root);
         }
+
         private void PrintTreeDescending(Node<T> node)
         {
-            if (root == null)
+            if (_root == null)
             {
                 Console.WriteLine("В дереве отсутствуют значения");
                 Console.ReadKey();

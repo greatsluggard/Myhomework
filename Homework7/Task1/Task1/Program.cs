@@ -28,7 +28,7 @@ namespace Task1
                     Console.Write("Введите значение для добавления в дерево: ");
                     int.TryParse(Console.ReadLine(), out int value);
 
-                    tree.AddToTree(value);
+                    tree.Add(value);
                 }
 
                 if (choice == "2")
@@ -36,7 +36,7 @@ namespace Task1
                     Console.Write("Введите значение для удаления из дерева: ");
                     int.TryParse(Console.ReadLine(), out int value);
 
-                    tree.DeleteNode(value);
+                    tree.Delete(value);
                 }
 
                 if (choice == "3")
@@ -44,7 +44,7 @@ namespace Task1
                     Console.Write("Введите значение для проверки принадлежности к множеству: ");
                     int.TryParse(Console.ReadLine(), out int value);
 
-                    tree.IsBelongsToSet(value);
+                    tree.Find(value);
                 }
 
                 if (choice == "4")
