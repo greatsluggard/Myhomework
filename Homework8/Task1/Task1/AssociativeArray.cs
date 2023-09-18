@@ -334,9 +334,11 @@ namespace Task1
             return ""; 
         }
 
-        public void Check(T value)
+        public bool Check(T value)
         {
             Node<T> node = _root;
+
+            bool isHere = false;
 
             do
             {
@@ -344,7 +346,8 @@ namespace Task1
                 {
                     Console.WriteLine("Заданный ключ присутствует");
                     Console.ReadKey();
-                    return;
+                    isHere = true;
+                    return isHere;
                 }
                 else
                 {
@@ -361,10 +364,10 @@ namespace Task1
                 {
                     Console.WriteLine("Заданный ключ отсутствует");
                     Console.ReadKey();
-                    return;
                 }
             } while (node != null);
-        }
 
+            return isHere;
+        }
     }
 }
