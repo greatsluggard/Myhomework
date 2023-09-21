@@ -1,15 +1,16 @@
 using Task1;
+using NUnit.Framework;
 
 namespace Task1UnitTest
 {
     public class Tests
     {
-        private AssociativeArray<string> _associativeArray;
+        private AssociativeArray<string, string> _associativeArray;
 
         [SetUp]
         public void Setup()
         {
-            _associativeArray = new AssociativeArray<string>();
+            _associativeArray = new AssociativeArray<string, string>();
         }
 
         [Test]
@@ -35,6 +36,21 @@ namespace Task1UnitTest
 
             bool result = _associativeArray.Check(cow);
             bool expected = true;
+
+            Assert.AreEqual(result, expected);
+        }
+
+        [Test]
+        public void CorrectDelete()
+        {
+            string name = "Ivan";
+            string secondName = "Ivanov";
+
+            _associativeArray.Add(name, secondName);
+            _associativeArray.Delete(name);
+
+            bool result = _associativeArray.Check(name);
+            bool expected = false;
 
             Assert.AreEqual(result, expected);
         }

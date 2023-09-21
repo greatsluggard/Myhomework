@@ -2,17 +2,17 @@
 
 namespace Task1
 {
-    public class AssociativeArray<T> where T : IComparable<T>
+    public class AssociativeArray<KeyType, DataType> where KeyType : IComparable<KeyType>
     {
-        public class Node<T>
+        private class Node
         {
-            public T Key { get; set; }
-            public T Data { get; set; }
+            public KeyType Key { get; set; }
+            public DataType Data { get; set; }
             public int Height { get; set; }
-            public Node<T> Left { get; set; }
-            public Node<T> Right { get; set; }
+            public Node Left { get; set; }
+            public Node Right { get; set; }
 
-            public Node(T key, T data)
+            public Node(KeyType key, DataType data)
             {
                 Key = key;
                 Data = data;
@@ -22,43 +22,50 @@ namespace Task1
             }
         }
 
-        private Node<T> _root;
+        private Node _root;
 
         public AssociativeArray()
         {
             _root = null;
         }
 
-        public int GetHeight(Node<T> node)
+        private int GetHeight(Node node)
         {
             return node == null ? -1 : node.Height;
         }
 
-        public void UpdateHeight(Node<T> node)
+        private void UpdateHeight(Node node)
         {
-            node.Height = Math.Max(GetHeight(node.Left), GetHeight(node.Right)) + 1;
+            if (GetHeight(node.Left) >= GetHeight(node.Right))
+            {
+                node.Height = GetHeight(node.Left) + 1;
+            }
+            else
+            {
+                node.Height = GetHeight(node.Right) + 1;
+            }
         }
 
-        public int GetBalance(Node<T> node)
+        private int GetBalance(Node node)
         {
             return node == null ? 0 : GetHeight(node.Right) - GetHeight(node.Left);
         }
 
-        public void Swap(Node<T> a, Node<T> b)
+        private void Swap(Node a, Node b)
         {
-            T a_key = a.Key;
+            KeyType aKey = a.Key;
             a.Key = b.Key;
-            b.Key = a_key;
+            b.Key = aKey;
 
-            T a_data = a.Data;
+            DataType aData = a.Data;
             a.Data = b.Data;
-            b.Data = a_data;
+            b.Data = aData;
         }
 
-        public void RightRotate(Node<T> node)
+        private void RightRotate(Node node)
         {
             Swap(node, node.Left);
-            Node<T> buffer = node.Right;
+            Node buffer = node.Right;
             node.Right = node.Left;
             node.Left = node.Right.Left;
             node.Right.Left = node.Right.Right;
@@ -67,10 +74,10 @@ namespace Task1
             UpdateHeight(node);
         }
 
-        public void LeftRotate(Node<T> node)
+        private void LeftRotate(Node node)
         {
             Swap(node, node.Right);
-            Node<T> buffer = node.Left;
+            Node buffer = node.Left;
             node.Left = node.Right;
             node.Right = node.Left.Right;
             node.Left.Right = node.Left.Left;
@@ -79,7 +86,7 @@ namespace Task1
             UpdateHeight(node);
         }
 
-        public void Balance(Node<T> node)
+        private void Balance(Node node)
         {
             int balance = GetBalance(node);
             if (balance == -2)
@@ -94,16 +101,16 @@ namespace Task1
             {
                 if (GetBalance(node.Right) == -1)
                 {
-                    RightRotate(node.Right); 
+                    RightRotate(node.Right);
                 }
                 LeftRotate(node);
             }
         }
 
-        public Node<T> FindParent(Node<T> node)
+        private Node FindParent(Node node)
         {
-            Node<T> current = _root;
-            Node<T> parent = null;
+            Node current = _root;
+            Node parent = null;
 
             while (current != null && current != node)
             {
@@ -122,63 +129,65 @@ namespace Task1
             return parent;
         }
 
-        public void Add(T key, T value)
+        public void Add(KeyType key, DataType value)
         {
-            if (_root == null)
             {
-                _root = new Node<T>(key, value);
-                return;
-            }
-
-            Node<T> current = _root;
-            Node<T> parent = null;
-
-            Node<T> node = new Node<T>(key, value);
-
-
-            while (current != null)
-            {
-                parent = current;
-
-                if (current.Key.CompareTo(node.Key) == 0)
+                if (_root == null)
                 {
-                    current.Data = node.Data;
-                }
-
-                if (key.CompareTo(current.Key) < 0)
-                {
-                    current = current.Left;
-                }
-                else if (key.CompareTo(current.Key) > 0)
-                {
-                    current = current.Right;
-                }
-                else 
-                {
+                    _root = new Node(key, value);
                     return;
                 }
-            }
 
-            if (key.CompareTo(parent.Key) < 0)
-            {
-                parent.Left = node;
-            }
-            else
-            {
-                parent.Right = node;
-            }
- 
+                Node current = _root;
+                Node parent = null;
 
-            Node<T> temp = node;
-            while (temp != null)
-            {
-                UpdateHeight(temp);
-                temp = temp == _root ? null : FindParent(temp);
-                Balance(temp);
+                Node node = new Node(key, value);
+
+
+                while (current != null)
+                {
+                    parent = current;
+
+                    if (current.Key.CompareTo(node.Key) == 0)
+                    {
+                        current.Data = node.Data;
+                    }
+
+                    if (key.CompareTo(current.Key) < 0)
+                    {
+                        current = current.Left;
+                    }
+                    else if (key.CompareTo(current.Key) > 0)
+                    {
+                        current = current.Right;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                if (key.CompareTo(parent.Key) < 0)
+                {
+                    parent.Left = node;
+                }
+                else
+                {
+                    parent.Right = node;
+                }
+
+
+                Node temp = node;
+                while (temp != null)
+                {
+                    UpdateHeight(temp);
+                    temp = temp == _root ? null : FindParent(temp);
+                    Balance(temp);
+                }
             }
         }
 
-        public void Delete(T value)
+        public void Delete (KeyType key)
         {
             if (_root == null)
             {
@@ -187,14 +196,14 @@ namespace Task1
                 return;
             }
 
-            Node<T> current = _root;
-            Node<T> parent = null;
+            Node current = _root;
+            Node parent = null;
 
-            while (current != null && value.CompareTo(current.Key) != 0)
+            while (current != null && key.CompareTo(current.Key) != 0)
             {
                 parent = current;
 
-                if (value.CompareTo(current.Key) < 0)
+                if (key.CompareTo(current.Key) < 0)
                 {
                     current = current.Left;
                 }
@@ -265,8 +274,8 @@ namespace Task1
             }
             else
             {
-                Node<T> currentParent = current;
-                Node<T> currentRightChild = current.Right;
+                Node currentParent = current;
+                Node currentRightChild = current.Right;
 
                 while (currentRightChild.Left != null)
                 {
@@ -299,29 +308,27 @@ namespace Task1
                 }
             }
 
-            if (current != null)
+          
+            Node temp = current;
+            while (temp != null)
             {
-                Node<T> temp = current;
-                while (temp != null)
-                {
-                    UpdateHeight(temp);
-                    temp = temp == _root ? null : FindParent(temp);
-                    Balance(temp);
-                }
+                UpdateHeight(temp);
+                temp = temp == _root ? null : FindParent(temp);
+                Balance(temp);
             }
         }
 
-        public string GetValue(T value)
+        public string GetValue(KeyType key)
         {
-            Node<T> node = _root;
+            Node node = _root;
 
             while (node != null)
             {
-                if (value.CompareTo(node.Key) == 0)
+                if (key.CompareTo(node.Key) == 0)
                 {
                     return node.Data.ToString(); 
                 }
-                else if (value.CompareTo(node.Key) < 0)
+                else if (key.CompareTo(node.Key) < 0)
                 {
                     node = node.Left;
                 }
@@ -334,40 +341,38 @@ namespace Task1
             return ""; 
         }
 
-        public bool Check(T value)
+        public bool Check(KeyType key)
         {
-            Node<T> node = _root;
+            Node node = _root;
 
-            bool isHere = false;
+            bool isExist = false;
 
             do
             {
-                if (value.CompareTo(node.Key) == 0)
+                if (node == null)
+                {
+                    Console.WriteLine("Заданный ключ отсутствует");
+                }
+                else if (key.CompareTo(node.Key) == 0)
                 {
                     Console.WriteLine("Заданный ключ присутствует");
-                    Console.ReadKey();
-                    isHere = true;
-                    return isHere;
+                    isExist = true;
+                    return isExist;
                 }
                 else
                 {
-                    if (value.CompareTo(node.Key) < 0)
+                    if (key.CompareTo(node.Key) < 0)
                     {
                         node = node.Left;
                     }
-                    else if (value.CompareTo(node.Key) > 0)
+                    else if (key.CompareTo(node.Key) > 0)
                     {
                         node = node.Right;
                     }
                 }
-                if (node == null)
-                {
-                    Console.WriteLine("Заданный ключ отсутствует");
-                    Console.ReadKey();
-                }
             } while (node != null);
 
-            return isHere;
+            return isExist;
         }
     }
 }

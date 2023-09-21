@@ -8,7 +8,7 @@ namespace Task1
         {
             string choice;
 
-            AssociativeArray<string> array = new AssociativeArray<string>();
+            AssociativeArray<string,string> array = new AssociativeArray<string,string>();
 
             do
             {
