@@ -23,7 +23,10 @@ namespace Task1
         public HashTable(int size)
         {
             arrayOfValues = new List<HashNode>(new HashNode[size]);
+            Size = size;
         }
+
+        public int Size { get { return arrayOfValues.Count; } set { } }
 
         public int GetHash(string key)
         {
@@ -45,6 +48,18 @@ namespace Task1
         {
             int index = GetIndex(key);
             HashNode node = arrayOfValues[index];
+
+            try
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", "В контексте решения данной задачи значение не может быть отрицательным");
+                }
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine("Произошло исключение: " + ex.Message);
+            }
 
             if (node == null)
             {
@@ -70,6 +85,17 @@ namespace Task1
 
         public int Print(string key)
         {
+            try
+            {
+                if (key.Length == 0)
+                {
+                    throw new ArgumentException(" Значение ключа не может быть пустым");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("В методе Print произошла ошибка!" + ex.Message);
+            }
             int index = GetIndex(key);
             HashNode node = arrayOfValues[index];
 
