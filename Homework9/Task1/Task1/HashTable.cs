@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Task1
 {
+    public class HashTableException : Exception
+    {
+        public HashTableException(string message) : base(message) { }
+    }
     public class HashTable
     {
         private List<HashNode> arrayOfValues;
@@ -23,6 +28,17 @@ namespace Task1
         public HashTable(int size)
         {
             arrayOfValues = new List<HashNode>(new HashNode[size]);
+            try
+            {
+                if (size == 0)
+                {
+                    throw new HashTableException("Длина массива не может равняться 0. Это приведёт к ошибке хэширования.");
+                }
+            }
+            catch (HashTableException ex) 
+            {
+                Console.WriteLine(ex.Message);
+            }
             Size = size;
         }
 
@@ -35,6 +51,7 @@ namespace Task1
             {
                 hash = (hash << 5) - hash + key[i];
             }
+
             return Math.Abs(hash);
         }
 
@@ -53,10 +70,10 @@ namespace Task1
             {
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException("value", "В контексте решения данной задачи значение не может быть отрицательным");
+                    throw new HashTableException("В контексте решения данной задачи значение не может быть отрицательным");
                 }
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch (HashTableException ex)
             {
                 Console.WriteLine("Произошло исключение: " + ex.Message);
             }
@@ -89,10 +106,10 @@ namespace Task1
             {
                 if (key.Length == 0)
                 {
-                    throw new ArgumentException(" Значение ключа не может быть пустым");
+                    throw new HashTableException(" Значение ключа не может быть пустым");
                 }
             }
-            catch (ArgumentException ex)
+            catch (HashTableException ex)
             {
                 Console.WriteLine("В методе Print произошла ошибка!" + ex.Message);
             }
