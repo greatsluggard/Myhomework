@@ -71,10 +71,6 @@ namespace Task1
             Console.WriteLine();
 
             exampleHashTable2.Print("");
-
-            Console.WriteLine();
-
-            exampleHashTable2.GetHash("BAhgrgurhgrubcbeciuecue28219sqosqsoqmslsml");
         }
     }
 }
