@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Task1
 {
@@ -6,20 +7,32 @@ namespace Task1
     {
         static void Main()
         {
-            Lazy lazySingleThreadMode = LazyFactory.CreateSingleThreadMode(3, 5);
-            Console.WriteLine("Работа в однопоточном режиме: " +
-                "\n" + "- Первый вызов Get() вызывает вычисление и возвращает результат;" +
-                "\n" + "- Повторные вызовы Get() возвращают тот же объект, что и первый вызов;" +
-                "\n" + "- Вычисление должно запускаться не более одного раза;");
-            Console.WriteLine("Результат работы в однопоточном режиме: ");
-            Console.WriteLine(lazySingleThreadMode.Get());
-            Console.WriteLine(lazySingleThreadMode.Get());
-            Console.WriteLine(lazySingleThreadMode.Get());
+            //создание делегата и объекта Lazy для однопоточного режима
+            Random random = new Random();
+
+            Func<int> supplier = delegate { return random.Next(100) * 2; };
+            LazyForSingleThread<int> lazySingleMode = LazyFactory.CreateSingleThread(supplier);
+
+            //запуск потока и проверка повторных вызовов метода Get
+            Console.WriteLine("Однопоточный режим: ");
+            Thread singleThread = new Thread(() => lazySingleMode.Get());
+            singleThread.Start();
+            singleThread.Join();
+
+            lazySingleMode.Get();
+            lazySingleMode.Get();
+            lazySingleMode.Get();
 
             Console.WriteLine();
 
-            Console.WriteLine("Работа в многопоточном режиме: ");
-            (Lazy, bool) lazyMultiThreadedMode = LazyFactory.CreateMultiThreadMode(26, 3);
+            //создание объекта Lazy для многопоточного режима
+            Console.WriteLine("Многопоточный режим: ");
+            LazyForMultiThread<int> lazyMultiMode = LazyFactory.CreateMultiThread(supplier);
+            for (int i = 1; i < 6; i++) 
+            { 
+                Thread multiThread = new Thread(() => lazyMultiMode.Get());
+                multiThread.Start();
+            }
         }
     }
 }
