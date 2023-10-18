@@ -6,15 +6,19 @@ namespace Task1
     {
         static void Main()
         {
-            Random random = new Random();
-            for (int i = 0; i < 100; i++)
-            {
-                Func<int> task = () => random.Next(100);
-                MyThreadPool<int>.AddTask(task);
-            }
-
             MyThreadPool<int> pool = new MyThreadPool<int>(5);
 
+            Random random = new Random();
+
+            for (int i = 0; i < 100; i++)
+            {
+                pool.AddTask(() => random.Next(100));
+            }
+
+            var myTask = pool.AddTask(() => 2 * 2); 
+            myTask = pool.ContinueWith(x => x * 100);
+
+            Console.WriteLine(myTask);
         }
     }
 }

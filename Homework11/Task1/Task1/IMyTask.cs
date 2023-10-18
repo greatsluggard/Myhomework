@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace Task1
 {
@@ -9,6 +8,6 @@ namespace Task1
         TResult GetResult();
         bool IsCompleted { get; set; }
 
-        //Func<TResult> ContinueWith(Func<TResult, TResult> taskContinuation);
+        TResult ContinueWith(Func<TResult, TResult> taskContinuation);
     }
 }
