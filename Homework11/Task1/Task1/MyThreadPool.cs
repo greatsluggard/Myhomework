@@ -1,106 +1,155 @@
 ﻿using System;
 using System.Threading;
-using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Task1
 {
-    public class MyThreadPool<TResult> : IMyTask<TResult>
+    public class MyThreadPool
     {
-        static Queue _queue = new Queue();
-        private Thread _thread;
-        private Func<TResult> _task;
-        private int _countOfСompletedTask = 0;   //...Для условия закрытия потоков через ShutDown
-        public int _countOfThreads = 0;          //...Для юнит-теста
+        private BlockingCollection<Action> queueTask = new BlockingCollection<Action>();
+        private CancellationTokenSource stopToken = new CancellationTokenSource();
+        private int threadsCompletedWork = 0;
 
-        public TResult Result { get; set; }
-        public TResult ResultForContinueWith { get; set; }
- 
-        public bool IsCompleted { get; set; }
+        public int NumberOfThreads { get; }
+        public bool ThreadPoolIsClosed => NumberOfThreads == threadsCompletedWork;
 
-        static CancellationTokenSource source = new CancellationTokenSource();
-        CancellationToken token = source.Token;
-
-        object locker = new object();
-
-        public MyThreadPool(int n)
+        public MyThreadPool (int numberOfThreads)
         {
-            for (int i = 0; i < n; i++)
+            NumberOfThreads = numberOfThreads;
+            CreateThreads(numberOfThreads);
+        }
+
+        private void CreateThreads(int numberOfThreads)
+        {
+            for (var i = 0; i < numberOfThreads; ++i)
             {
-                _thread = new Thread(() => StartThread());
-                _thread.Start();
-                _countOfThreads++;
+                new Thread(() =>
+                {
+                    while (true)
+                    {
+                        if (stopToken.Token.IsCancellationRequested)
+                        {
+                            Interlocked.Increment(ref threadsCompletedWork);
+                            break;
+                        }
+
+                        queueTask?.Take().Invoke();
+                    }
+                }).Start();
             }
         }
 
-        private void StartThread()
+
+        public IMyTask<TResult> AddTask<TResult>(Func<TResult> func)                      
         {
-            while (true)
+            if (stopToken.Token.IsCancellationRequested)                                  
             {
-                lock (_queue)
+                throw new InvalidOperationException("Thread pool has been shutted down");
+            }
+
+            var task = new MyTask<TResult>(func, this);
+
+            try
+            {
+                queueTask.Add(task.Calculate, stopToken.Token);                      
+            }
+            catch
+            {
+                throw new InvalidOperationException("Thread pool has been shutted down");
+            }
+
+            return task;
+        }
+
+        public void Shutdown()                                                           
+        {
+            stopToken.Cancel();
+            queueTask?.CompleteAdding();
+            queueTask = null;
+        }
+
+        private Action AddAction(Action action)                                         
+        {
+            queueTask.Add(action, stopToken.Token);                                      
+
+            return action;
+        }
+
+        private class MyTask<TResult> : IMyTask<TResult>
+        {
+            private MyThreadPool threadPool;                                                                     
+            private Func<TResult> function;                                                                      
+            private ManualResetEvent waitHandler = new ManualResetEvent(false);                                 
+            private AggregateException exception;                                                                
+            private Queue<Action> localQueue;                                                                    
+            private TResult result;                                                                              
+            private object locker = new object();                                                               
+
+            public bool IsCompleted { get; private set; } = false;                                                
+
+            public TResult Result                                                                                
+            {
+                get
                 {
-                    if (_queue.Count > 0)
+                    waitHandler.WaitOne();
+                    if (exception == null)
                     {
-                        _task = (Func<TResult>)_queue.Dequeue();
-                        IsCompleted = true;
-                        GetResult();
-                        _countOfСompletedTask++;
+                        return result;
                     }
-                    else
+
+                    throw exception;
+                }
+            }
+
+            public MyTask(Func<TResult> task, MyThreadPool threadPool)
+            {
+                function = task;
+                this.threadPool = threadPool;
+                localQueue = new Queue<Action>();
+            }
+
+            public void Calculate()
+            {
+                try
+                {
+                    result = function();
+                }
+                catch (Exception ex)
+                {
+                    exception = new AggregateException(ex);
+                }
+                finally
+                {
+                    lock (locker)
                     {
-                        if (ShutDown() == true)
+                        IsCompleted = true;
+                        function = null;
+                        waitHandler.Set();
+
+                        while (localQueue.Count != 0)
                         {
-                            return;
+                            threadPool.AddAction(localQueue.Dequeue());
                         }
                     }
                 }
             }
-        }
 
-        public TResult AddTask(Func<TResult> task)
-        {
-            _queue.Enqueue(task);
-            _queue.TrimToSize();
-            ResultForContinueWith = task();
-            return ResultForContinueWith;
-        }
-
-        public TResult ContinueWith (Func<TResult, TResult> task)
-        {
-            TResult result = task(ResultForContinueWith);
-            Console.WriteLine("Тут выполнился метод ContinueWith " + result);
-            return result;
-        }
-
-        public TResult GetResult()
-        {
-            lock (locker)
+            public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> func)
             {
-                try
+                var newTask = new MyTask<TNewResult>(() => func(Result), threadPool);
+
+                lock (locker)
                 {
-                    Result = _task();
-                }
-                catch (AggregateException ex)
-                {
-                    Console.WriteLine(ex.InnerException);
-                }
+                    if (IsCompleted)
+                    {
+                        return threadPool.AddTask(() => func(Result));
+                    }
 
-                Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":   " + Result);
-                return Result;
+                    localQueue.Enqueue(newTask.Calculate);
+                    return newTask;
+                }
             }
-        }
-
-        private bool ShutDown()
-        {
-            if (_countOfСompletedTask >= 50)
-            {
-                source.Cancel();
-            }
-            if (token.IsCancellationRequested)
-            {
-                Console.WriteLine($"Operation returned and thread №{Thread.CurrentThread.ManagedThreadId} is stopped");
-                return true;
-            }
-            return false;
         }
     }
 }

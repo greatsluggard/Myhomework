@@ -2,12 +2,11 @@
 
 namespace Task1
 {
-    interface IMyTask<TResult>
+    public interface IMyTask<TResult>
     {
-        TResult Result { get; set; }
-        TResult GetResult();
-        bool IsCompleted { get; set; }
+        TResult Result { get; }
+        bool IsCompleted { get; }
 
-        TResult ContinueWith(Func<TResult, TResult> taskContinuation);
+        IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> func);
     }
 }
